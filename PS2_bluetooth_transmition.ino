@@ -3,8 +3,8 @@
 PS2X ps2x;
 #include <EasyTransfer.h>
 #include <SPI.h>
-#define SerialPS2 Serial3
-#define BluetoothSerial Serial3
+//#define SerialPS2 Serial
+#define BluetoothSerial Serial
 int error=0;
 byte type = 0;
 byte vibrate = 0;
@@ -26,8 +26,9 @@ PS2_data data;
 
 void initPS2()
 {
-     error = ps2x.config_gamepad(52,51,31,50, true, true);   //setup pins and settings:  GamePad(clock, command, attention, data, Pressures?, Rumble?) check for error
- 
+  
+     error = ps2x.config_gamepad(13,11,10,12, true, true);   //setup pins and settings:  GamePad(clock, command, attention, data, Pressures?, Rumble?) check for error
+      // dat_ 12   cmd __ 11    sel ___ 10     clk____ 13 
  if(error == 0){
    Serial.println("Found Controller, configured successful");
    Serial.println("Try out all the buttons, X will vibrate the controller, faster as you press harder;");
@@ -65,7 +66,7 @@ void initPS2()
 void getPS2value()
 { 
   ps2x.read_gamepad(false,vibrate);
-  data.ps2data=~ps2x.buttons_2;
+  data.ps2data=ps2x.buttons_2;
   data.Rx=ps2x.PS2data[5];
   data.Ry=ps2x.PS2data[6];
   data.Lx=ps2x.PS2data[7];
@@ -81,7 +82,7 @@ void setup() {
 
 void loop() {
   getPS2value();
-  Serial.println(data.ps2data);
+  //Serial.println(data.ps2data);
   ET.sendData();
   delay(50); 
 }

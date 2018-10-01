@@ -2,7 +2,7 @@
 #include <EasyTransfer.h>
 #include <SPI.h>
 
-#define SerialPS2 Serial2
+//#define SerialPS2 Serial
 #define BluetoothSerial Serial2
 
 #define PS3
@@ -33,6 +33,7 @@ double LeftAnalogTheta=0,RightAnalogTheta=0;
 float LeftAnalogDistance=0,RightAnalogDistance=0;
 const float rad = 1;
 const float pi = 3.14159;
+long int count=0;
 
 
 
@@ -43,89 +44,84 @@ void setup() {
 }
 
 void loop() {
+  ps2x.last_buttons=ps2x.buttons;
   if(ET.receiveData())
   {
-   // Serial.println(data.ps2data);
-    ps2x.buttons=data.ps2data;
+       ps2x.buttons=data.ps2data;
+       //Serial.println(ps2x.buttons);
   }
+  
   scalePS2value();
   PS2executePressed();
+  count++;
 }
 
 
 
 void PS2executePressed(){    
-    if (ps2x.ButtonPressed(PSB_PAD_UP))  //x refers to the array which will be in terms of 000x 0000 if switch corresponding to up is pressed and up refers to enum
+
+    if(count >3)         // put all released buttons functions  func in this loop)
+     {                
+          if(ps2x.ButtonReleased(PSB_R1))
+         {
+             Serial.println("R1");
+             //r1Released();
+         }
+        
+          if(ps2x.ButtonReleased(PSB_R2))
+         {
+           Serial.println("R2");
+            //r2Released();
+          }
+          
+          if(ps2x.ButtonReleased(PSB_L1))
+         {
+             Serial.println("L1");
+             //r1Released();
+         }
+        
+          if(ps2x.ButtonReleased(PSB_L2))
+         {
+           Serial.println("L2");
+            //r2Released();
+          }
+      }
+      
+    if (ps2x.Button(PSB_PAD_UP))  //x refers to the array which will be in terms of 000x 0000 if switch corresponding to up is pressed and up refers to enum
     { 
          // upPressed();
-          Serial.println('s');
-    }
-    
-    if(ps2x.ButtonReleased(PSB_PAD_UP))
-    {
-    //   upReleased();
-     Serial.println("UR");
+          Serial.println("up");
     }
     
     if(ps2x.ButtonPressed(PSB_PAD_RIGHT))  //x refers to the array which will be in terms of 000x 0000 if switch corresponding to up is pressed and up refers to enum
     {
         //    rightPressed(); 
-            Serial.println('r');
-    }
-     
-    if(ps2x.ButtonReleased(PSB_PAD_RIGHT))
-    {
-          Serial.println("RR");
-         // rightReleased();
-    }
-        
+            Serial.println("right");
+    }   
+
     if(ps2x.ButtonPressed(PSB_PAD_LEFT))  //x refers to the array which will be in terms of 000x 0000 if switch corresponding to up is pressed and up refers to enum
     {
            //leftPressed(); 
-           Serial.println('l');
-    }
-    
-    if(ps2x.ButtonReleased(PSB_PAD_LEFT))
-    {
-         Serial.println("LR");         
-        // leftReleased();
+           Serial.println("left");
     }
     
      if(ps2x.ButtonPressed(PSB_PAD_DOWN)) //x refers to the array which will be in terms of 000x 0000 if switch corresponding to up is pressed and up refers to enum
     {
           //downPressed();
-          Serial.println('D');
+          Serial.println("down");
     }
-     
-     if(ps2x.ButtonReleased(PSB_PAD_DOWN)) //x refers to the array which will be in terms of 000x 0000 if switch corresponding to up is pressed and up refers to enum
-     {
-         Serial.println("DR");
-     
-        //downReleased();
-     }
     
      if(ps2x.ButtonPressed(PSB_SELECT))
      {  
           //selPressed();
-          Serial.println('E');
-    }
-    if(ps2x.ButtonReleased(PSB_SELECT))
-    {
-         // selReleased();
-         Serial.println("ER");     
+          Serial.println("select");
     }
     
     if(ps2x.ButtonPressed(PSB_START))
     {  
           //  startPressed();
-            Serial.println('S');
+            Serial.println("start");
      }
-    
-    if(ps2x.ButtonReleased(PSB_START)) 
-    {
-       Serial.println("SR");    
-       // startReleased();
-    }
     
     if(ps2x.ButtonPressed(PSB_TRIANGLE))
     {   
@@ -133,69 +129,25 @@ void PS2executePressed(){
             Serial.println('T');     
     }  
     
-    if(ps2x.ButtonReleased(PSB_TRIANGLE))
-    {
-       Serial.println("TR");     
-       // triangleReleased();
-    }
-    
     if(ps2x.ButtonPressed(PSB_CIRCLE))
      {
          //   circlePressed();
             Serial.println('C'); 
      }
      
-     if(ps2x.ButtonReleased(PSB_CIRCLE))
+     if(ps2x.ButtonPressed(PSB_CROSS))
      {
-       Serial.println("CR");
-       //circleReleased();
+       Serial.println("Xc");
+
      }
-   
      
-     if(ps2x.ButtonReleased(PSB_CROSS))
-     {
-       Serial.println("XR");
-//        flag=0;
-      //  crossReleased();
-      }
-     
-        
-    
      if(ps2x.ButtonPressed(PSB_SQUARE))
      {
         //  squarePressed();
            Serial.println('S');     
      }
 
-     if(ps2x.ButtonReleased(PSB_SQUARE))
-     {
-       Serial.println("SR");
-     //squareReleased();
-     }  
-  
-      if(ps2x.ButtonPressed(PSB_R1))
-     {
-       //   r1Pressed();    
-          Serial.println("r1");
-     }
-
-      if(ps2x.ButtonReleased(PSB_R1))
-     {
-         Serial.println("HR");
-         //r1Released();
-     }
-    
-      if(ps2x.ButtonPressed(PSB_R2))
-     {
-          //r2Pressed();
-          Serial.println("r2");
-     }
-
-      if(ps2x.ButtonReleased(PSB_R2))
-     {
-       Serial.println("IR");
-        //r2Released();
-      }
+     
  delay(wirelessdelay);  
 }
 
